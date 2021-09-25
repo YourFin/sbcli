@@ -1,17 +1,9 @@
-#!/usr/bin/env -S sbcl --script
-(load "~/quicklisp/setup")
-
-(let ((*standard-output* (make-broadcast-stream)))
-  (ql:quickload "alexandria")
-  (ql:quickload "cl-readline")
-  (ql:quickload "str"))
-
 (require :sb-introspect)
 
 (defpackage :sbcli
   (:use :common-lisp :cffi)
   (:export sbcli *repl-version* *repl-name* *prompt* *prompt2* *ret* *config-file*
-           *hist-file* *special*))
+           *hist-file* *special* main))
 
 (defpackage :sbcli-user
   (:use :common-lisp :sbcli))
@@ -23,8 +15,8 @@
 (defvar *prompt*       "sbcl> ")
 (defvar *prompt2*       "....> ")
 (defvar *ret*          "=> ")
-(defvar *config-file*  "~/.sbclirc")
-(defvar *hist-file*    "~/.sbcli_history")
+(defvar *config-file*  "~/.config/sbclirc")
+(defvar *hist-file*    "~/.cache/sbcli_history")
 (defvar *hist*         (list))
 (defvar *pygmentize*   nil)
 (declaim (special *special*))
@@ -411,15 +403,16 @@ strings to match candidates against (for example in the form \"package:sym\")."
     (rl:register-function :redisplay #'syntax-hl)
     (sbcli "" *prompt*)))
 
-(if (probe-file *config-file*)
-  (load *config-file*))
+(defun main ()
+  (if (probe-file *config-file*)
+      (load *config-file*))
 
-(format t "~a version ~a~%" *repl-name* *repl-version*)
-(write-line "Press CTRL-D or type :q to exit")
-(write-char #\linefeed)
-(finish-output nil)
+  (format t "~a version ~a~%" *repl-name* *repl-version*)
+  (write-line "Press CTRL-D or type :q to exit")
+  (write-char #\linefeed)
+  (finish-output nil)
 
-(when *hist-file* (read-hist-file))
+  (when *hist-file* (read-hist-file))
 
-(handler-case (sbcli "" *prompt*)
-  (sb-sys:interactive-interrupt () (end)))
+  (handler-case (sbcli "" *prompt*)
+    (sb-sys:interactive-interrupt () (end))))

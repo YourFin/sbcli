@@ -1,22 +1,14 @@
 # sbcli
 
-A better REPL for SBCL. It handles errors greacefully, is not too verbose, has
+A better REPL for SBCL. It handles errors gracefully, is not too verbose, has
 readline capabilities, including multiline input and reset, and has optional
 syntax highlighting capabilities using [pygmentize](https://pygments.org/).
 
+This fork packages sbcli for the [nix package manager](https://nixos.org/), and notably does /not/ include quicklisp. I've also been too lazy thus far to include pygmentize, but it shouldn't be too hard to do.
+
 ## Installation
 
-For most cases, calling `./install.sh` should suffice. It will install `sbcli`
-into `$PREFIX/bin`, with the environment variable `PREFIX` defaulting to
-`/usr/local`. If you are using Mac and having issues with `cl-readline` see the
-[installation notes for cl-readline](https://github.com/mrkkrp/cl-readline#installation).
-
-## Dependencies
-
-`sbcli` depends on [Quicklisp](http://quicklisp.org/) and
-[cl-readline](https://github.com/mrkkrp/cl-readline). If you have Quicklisp
-installed, cl-readline will be installed on `sbcli`s first launch. `sbcli`
-assumes that Quicklisp is installed under `~/quicklisp`.
+`nix-build` will build the derivation :P
 
 ## Usage
 
@@ -57,7 +49,7 @@ break if your result contains newlines. Use at your own peril for now!
 ## Customization
 
 If you want you can add customizations to `sbcli`. On startup it will load a
-file called `.sbclirc` in your home directory if it exists. You can execute
+file called `.config/sbclirc` in your home directory if it exists. You can execute
 arbitrary code there, two of the more interesting values to set are `*prompt*`
 and `*ret*`. Check out an example resource file
 [here](https://github.com/hellerve/sbcli/blob/master/examples/.sbclirc).
@@ -78,7 +70,7 @@ For reference, here is a complete list of the variables we expose:
 *ret*          ; => "=> "
 
 ; where to store the history
-*hist-file*    ; => "~/.sbcli_history"
+*hist-file*    ; => "~/.cache/sbcli_history"
 
 ; the history variable
 ; while nothing prevents you from writing to it, i advise against it
